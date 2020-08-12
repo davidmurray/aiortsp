@@ -7,9 +7,11 @@ but there is no light/easily importable RTCP parser available...
 from abc import ABC, abstractmethod
 from struct import unpack, pack
 from typing import Tuple, Dict, Type, Optional, List
+import logging
 
 TS_OFFSET_1900 = 2208988800
 
+_logger = logging.getLogger("rtcp.parser")
 
 def ts_to_ntp(ts: float) -> Tuple[int, int]:
     """
@@ -352,7 +354,7 @@ class RTCP:
             # Split current bytes and bytes from next packet
             payload_length = 4 + p_len * 4
             if payload_length > len(data):
-                raise ValueError(f'RTCP Packet truncated ({payload_length} > {len(data)})')
+                _logger.info("RTCP packet seems truncated (%s > %s), but we are accepting it anyway.", payload_length, len(data))
 
             payload, data = data[4:payload_length], data[payload_length:]
 
