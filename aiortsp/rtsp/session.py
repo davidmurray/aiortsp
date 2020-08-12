@@ -227,6 +227,37 @@ class RTSPMediaSession:
         self.logger.debug('response to play: %s', resp)
         return resp
 
+
+    async def play_between_dates(self, start_date, end_date=None, speed=1):
+        """
+        Send a PLAY request
+        :param start_date: Start date (datetime) to start playback from. This must be specified.
+        :param end_date: End date (datetime) to end playback at. This is optional.
+        :param speed: Replay speed. Could be used for fast forward playing. Defaults to 1.
+        """
+
+        def format_date(date):
+            return date.strftime('%Y%m%dT%H%M%S') + 'Z'
+
+        formatted_start_date = format_date(start_date)
+        range_ = f'clock={formatted_start_date}-'
+
+        if end_date:
+            formatted_end_date = format_date(end_date)
+            range_ += {formatted_end_date}
+
+        self.logger.info(
+            'start playing %s within range `%s` and speed `%s`...',
+            self.media_url, range_, speed
+        )
+
+        resp = await self._send('PLAY', headers={
+            'Scale': speed,
+            'Range': range_
+        })
+        self.logger.debug('response to play: %s', resp)
+        return resp
+
     async def pause(self):
         """
         Send a PAUSE, temporarily stopping RTP flow but keeping session alive.
