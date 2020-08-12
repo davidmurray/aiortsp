@@ -244,7 +244,7 @@ class RTSPMediaSession:
 
         if end_date:
             formatted_end_date = format_date(end_date)
-            range_ += {formatted_end_date}
+            range_ += formatted_end_date
 
         self.logger.info(
             'start playing %s within range `%s` and speed `%s`...',
