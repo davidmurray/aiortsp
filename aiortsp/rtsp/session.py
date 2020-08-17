@@ -3,6 +3,7 @@ RTSP Media Session setup and control
 """
 import asyncio
 import calendar
+import datetime
 import json
 import logging
 import math
@@ -237,7 +238,8 @@ class RTSPMediaSession:
         """
 
         def format_date(date):
-            return date.strftime('%Y%m%dT%H%M%S') + 'Z'
+            # As per the RFC, dates must be in the UTC timezone. 
+            return date.astimezone(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S') + 'Z'
 
         formatted_start_date = format_date(start_date)
         range_ = f'clock={formatted_start_date}-'
