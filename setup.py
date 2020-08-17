@@ -6,5 +6,6 @@ with (root_dir / 'aiortsp' / '__version__.py').open(encoding='utf-8') as f:
     exec(f.read())
 
 setuptools.setup(
+    name="aiortsp-davidmurray",
     version=__version__,
 )
