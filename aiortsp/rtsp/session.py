@@ -8,7 +8,6 @@ import json
 import logging
 import math
 import re
-from datetime import datetime
 from typing import Set
 from urllib.parse import urlparse
 
@@ -172,7 +171,7 @@ class RTSPMediaSession:
             20190322T043720.003Z
         :param seek: utc timestamp
         """
-        res = datetime.utcfromtimestamp(seek).strftime('%Y%m%dT%H%M%S')
+        res = datetime.datetime.utcfromtimestamp(seek).strftime('%Y%m%dT%H%M%S')
         rem = seek - math.floor(seek)
         if rem:
             res += str(round(rem, 3))[1:]
@@ -191,7 +190,7 @@ class RTSPMediaSession:
                 return default_ts
 
             content = res.groupdict()
-            dt = datetime.strptime(content['date'] + content['time'], '%Y%m%d%H%M%S')
+            dt = datetime.datetime.strptime(content['date'] + content['time'], '%Y%m%d%H%M%S')
 
             ts = calendar.timegm(dt.timetuple())
 
