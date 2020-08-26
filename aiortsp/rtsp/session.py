@@ -73,32 +73,10 @@ class RTSPMediaSession:
         resp = await self._send('OPTIONS', url=self.media_url)
         self.save_options(resp)
 
-        # Some servers return errors when sending the DESCRIBE command.
-        # In this case, we ignore the error and simply move on.
-        try:
-            # Get SDP
-            resp = await self._send('DESCRIBE', headers={
-                'Accept': 'application/sdp'
-            })
-
-            if 'content-base' in resp.headers:
-                self.media_url = resp.headers['content-base']
-                self.logger.info('using base url: %s', self.media_url)
-
-            self.logger.debug('received SDP:\n%s', resp.content)
-            self.sdp = SDP(resp.content)
-            self.logger.debug('parsed SDP:\n%s', json.dumps(self.sdp, indent=2))
-
-            setup_url = self.sdp.setup_url(self.media_url, media_type=self.media_type)
-            self.logger.info('setting up using URL: %s', setup_url)
-        except RTSPResponseError as e:
-            self.logger.info('got error when sending the DESCRIBE RTSP command. Error: %s', e)
-            setup_url = self.media_url
-
         # --- SETUP <url> RTSP/1.0 ---
         headers = {}
         self.transport.on_transport_request(headers)
-        resp = await self.connection.send_request('SETUP', url=setup_url, headers=headers)
+        resp = await self.connection.send_request('SETUP', url=self.media_url, headers=headers)
         self.transport.on_transport_response(resp.headers)
         self.logger.info('stream correctly setup: %s', resp)
 
