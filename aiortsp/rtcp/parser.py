@@ -354,7 +354,7 @@ class RTCP:
             # Split current bytes and bytes from next packet
             payload_length = 4 + p_len * 4
             if payload_length > len(data):
-                _logger.info("RTCP packet seems truncated (%s > %s), but we are accepting it anyway.", payload_length, len(data))
+                _logger.debug("RTCP packet seems truncated (%s > %s), but we are accepting it anyway.", payload_length, len(data))
 
             payload, data = data[4:payload_length], data[payload_length:]
 
